@@ -26,7 +26,7 @@ void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std:
 					if (size == 0) {
 						std::cout << "There are no other user to message" << '\n';
 						mData.waitingForMessage = false;
-						std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
+						std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 					}
 					else {
 						std::cout << "You can write message to this users: \n";
@@ -35,7 +35,7 @@ void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std:
 							req >> userId;
 							std::cout << "User: " << userId << "\n";
 						}
-						std::cout << "Enter users Id to message: ";
+						std::cout << "Enter users Id to message: " << std::flush;
 					}
 				};
 												  break;

@@ -14,7 +14,7 @@ namespace Network {
 		virtual ~ServerInterface() {
 			stop();
 		};
-		//Start server and waait for clients connections
+		//Start server and wait for clients connections
 		bool start() {
 			try
 			{
@@ -44,13 +44,12 @@ namespace Network {
 		void WaitForConnection() {
 			m_acceptor.async_accept([this](std::error_code err, boost::asio::ip::tcp::socket socket) {
 				if (!err) {
-					std::cout << "SERVER New connection" << socket.remote_endpoint() << '\n';
 					auto newConn = std::make_shared<Connection<T>>(Connection<T>::owner::server, m_context, std::move(socket), m_dqRequestsIn);
 					auto id = m_IDCounter++;
 					if (onClientConnect(newConn)) {
 						m_Connections[id] = std::move(newConn);
 						m_Connections[id]->connectToClient(this, id);
-						std::cout << "[" << id << "] Approved\n";
+						std::cout << "[" << id << "] Connected\n";
 					}
 					else {
 						std::cout << "- Connection Denied\n";
@@ -78,7 +77,6 @@ namespace Network {
 		void update() {
 
 			while (!m_dqRequestsIn.empty()) {
-			std::cout << "update \n";
 				auto req = m_dqRequestsIn.pop_front();
 				onRequest(req.clientReq, req.req);
 			}
