@@ -5,7 +5,9 @@ Build and installation
 To build this project you need:
  - Cmake version 3.29 (https://cmake.org/download/)
  - Boost version 1.84.0 (https://www.boost.org/users/history/version_1_84_0.html)
-Build using Cmake GUI:
+   
+####  Build using Cmake GUI:
+
  1. Choose where the source code is located.
  2. Choose where Cmake will generate the build.
  3. Press Configure.
