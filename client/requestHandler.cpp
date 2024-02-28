@@ -1,9 +1,7 @@
 #include "requestHandler.h"
 
 
-void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std::string>& inputFuture) {
-	while (!quit && (inputFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready))
-	{
+void handleRequest(Client& c, bool& quit, messagingData& mData) {
 		if (c.isConnected()) {
 			if (!c.incoming().empty()) {
 				auto req = c.incoming().pop_front().req;
@@ -13,7 +11,7 @@ void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std:
 				{
 					std::cout << "Online\n";
 					std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
-					std::cout << R"(Input "Q" or "Quit" to quit: )" << "\n";
+					std::cout << R"(Input "Q" or "Quit" to quit: )" << std::endl;
 				}
 				break;
 				case RequestTypes::IsServerUp: {
@@ -43,19 +41,19 @@ void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std:
 					std::string message{};
 					//message.resize(req.getHeader().size);
 					req >> message;
-					std::cout << "[" << req.getHeader().reqData.reciverId << "]: " << message << std::endl;
+					std::cout << "[" << req.getHeader().reqData.senderId << "]: " << message << std::endl;
 				};
 												  break;
 				case RequestTypes::IsClientOnline: {
 					req >> mData.isOnline;
 					if (mData.isOnline) {
-						std::cout << "Enter your message: ";
+						std::cout << "Enter your message: " << std::flush;
 					}
 					else {
 						std::cout << "User is not online!" << std::endl;
 						mData.userId = 0;
 						mData.waitingForMessage = false;
-						std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
+						std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 					}
 				};
 												 break;
@@ -63,11 +61,14 @@ void handleRequest(Client& c, bool& quit, messagingData& mData, std::future<std:
 					break;
 				}
 			}
+			else {
+				c.incoming().waitForMore();
+
+			}
 		}
 		else {
 			std::cout << "Sever Down\n";
 			quit = true;
 		}
-	}
 
 }

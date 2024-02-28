@@ -75,6 +75,7 @@ namespace Network {
 		}
 		//handle request if there any
 		void update() {
+			m_dqRequestsIn.waitForMore();
 
 			while (!m_dqRequestsIn.empty()) {
 				auto req = m_dqRequestsIn.pop_front();

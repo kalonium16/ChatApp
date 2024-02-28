@@ -6,4 +6,4 @@
 #include "client.h"
 #include "common.h"
 
-void handleRequest(Client&, bool&, messagingData&, std::future<std::string>&);
+void handleRequest(Client&, bool&, messagingData&);

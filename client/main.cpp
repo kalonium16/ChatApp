@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <thread>
 #include "client.h"
 #include "inputHandler.h"
 #include "requestHandler.h"
@@ -24,24 +25,36 @@ int main(int argc, char* argv[]) {
 
 void mainLoop(Client& c) {
 
-	bool bQuit = false;
+	bool quit = false;
 	messagingData mData;
-	while (!bQuit)
+	std::thread reqThread([&]() {
+		while (!quit)
+		{
+			handleRequest(c,quit,mData);
+		}
+		});
+	while (!quit)
 	{
 
 
-		auto input = std::async(std::launch::async, []() {
+		auto input = std::async(std::launch::async, [&]() {
 			std::string input;
 			std::getline(std::cin, input);
 			return input;
 			});
-		//handle requests from server
-		handleRequest(c, bQuit, mData, input);
-
 		const std::string inputString = input.get();
 		// handle user input
-		handleInput(c, bQuit, mData, inputString);
-		
-	}
+		handleInput(c, quit, mData, inputString);
+	} 
+	try
+	{
 
+		if (reqThread.joinable()) {
+			reqThread.join();
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what();
+	}
 }

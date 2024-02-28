@@ -37,6 +37,7 @@ void Server::onRequest(std::shared_ptr<Network::Connection<RequestTypes>> client
 	case RequestTypes::MessageToClient:
 	{
 		auto clientId = req.getHeader().reqData.reciverId;
+		req.getHeader().reqData.senderId = client->getId();
 		if (this->getConnections().contains(clientId)) {
 			this->getConnections()[clientId]->send(req);
 		}

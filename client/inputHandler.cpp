@@ -37,6 +37,7 @@ void handleInput(Client& c, bool& bQuit, messagingData& mData, const std::string
 		}
 
 		if (inputString == "Quit" || inputString == "quit" || inputString == "q" || inputString == "Q") {
+			c.incoming().stopWaiting();
 			bQuit = true;
 			return;
 		}

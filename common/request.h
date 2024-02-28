@@ -4,6 +4,7 @@ namespace Network {
 	struct RequestData
 	{
 		uint32_t reciverId{};
+		uint32_t senderId{};
 	};
 
 	template <typename T>

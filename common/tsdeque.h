@@ -26,12 +26,15 @@ namespace Network{
 		void push_back(const T& item) {
 			std::scoped_lock lock(m_dequeMutex);
 			m_deque.push_back(item);
-
+			std::unique_lock<std::mutex> ulock(m_blockingMutex);
+			m_blockIfEmpty.notify_one();
 		}
 
 		void push_front(const T& item) {
 			std::scoped_lock lock(m_dequeMutex);
 			m_deque.push_front(item);
+			std::unique_lock<std::mutex> ulock(m_blockingMutex);
+			m_blockIfEmpty.notify_one();
 		}
 
 		bool empty() {
@@ -63,10 +66,24 @@ namespace Network{
 			return item;
 		}
 
+		void waitForMore() {
+			if (empty())
+			{
+				std::unique_lock<std::mutex> ulock(m_blockingMutex);
+				m_blockIfEmpty.wait(ulock);
+			}
+		}
+
+		void stopWaiting() {
+			m_blockIfEmpty.notify_one();
+		}
 
 	protected:
 		std::mutex m_dequeMutex;
 		std::deque<T> m_deque;
+
+		std::mutex m_blockingMutex;
+		std::condition_variable m_blockIfEmpty;
 	};
 
 }
