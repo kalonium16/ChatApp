@@ -1,8 +1,9 @@
 #pragma once
-
+#include <atomic>
+#include <memory>
 struct messagingData
 {
-	bool waitingForMessage = false;
-	uint32_t userId{};
-	bool isOnline{ false };
+	std::atomic_bool waitingForMessage = false;
+	std::atomic_bool isOnline{ false };
+	std::atomic<uint32_t> userId{};
 };

@@ -2,7 +2,7 @@
 #include "inputHandler.h"
 
 
-void handleInput(Client& c, bool& bQuit, messagingData& mData, const std::string& inputString)
+void handleInput(Client& c, std::atomic_bool& bQuit, messagingData& mData, const std::string& inputString)
 {
 	if (mData.waitingForMessage) {
 		if (mData.userId == 0) {
@@ -18,7 +18,7 @@ void handleInput(Client& c, bool& bQuit, messagingData& mData, const std::string
 				mData.waitingForMessage = false;
 				mData.isOnline = false;
 				std::cerr << e.what() << '\n';
-				std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
+				std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 			}				
 		}
 		else if (mData.isOnline) {
@@ -26,7 +26,7 @@ void handleInput(Client& c, bool& bQuit, messagingData& mData, const std::string
 			mData.userId = 0;
 			mData.waitingForMessage = false;
 			mData.isOnline = false;
-			std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
+			std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 			return;
 		}
 	}
@@ -37,17 +37,17 @@ void handleInput(Client& c, bool& bQuit, messagingData& mData, const std::string
 		}
 
 		if (inputString == "Quit" || inputString == "quit" || inputString == "q" || inputString == "Q") {
-			c.incoming().stopWaiting();
 			bQuit = true;
 			return;
 		}
+
 
 		if (inputString == "M" || (inputString) == "message" || inputString == "Message") {
 			c.getOterClients();
 			return;
 		}
 
-		std::cout << "Unknown command try again" << std::endl;
-		std::cout << R"(Input "M" or "Message" to send messaage: )" << "\n";
+		std::cout << "Unknown command try again" << "\n";
+		std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 	}
 }

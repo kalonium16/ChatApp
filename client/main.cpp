@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <atomic>
 #include "client.h"
 #include "inputHandler.h"
 #include "requestHandler.h"
@@ -25,14 +26,9 @@ int main(int argc, char* argv[]) {
 
 void mainLoop(Client& c) {
 
-	bool quit = false;
+	std::atomic_bool quit = false;
 	messagingData mData;
-	std::thread reqThread([&]() {
-		while (!quit)
-		{
-			handleRequest(c,quit,mData);
-		}
-		});
+	RequestHandler reqHandler{ c, quit, mData };
 	while (!quit)
 	{
 
@@ -46,15 +42,5 @@ void mainLoop(Client& c) {
 		// handle user input
 		handleInput(c, quit, mData, inputString);
 	} 
-	try
-	{
 
-		if (reqThread.joinable()) {
-			reqThread.join();
-		}
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << e.what();
-	}
 }
