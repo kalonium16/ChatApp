@@ -3,7 +3,7 @@
 Build and installation
 ----------------------
 To build this project you need:
- - Cmake version 3.29 (https://cmake.org/download/)
+ - Cmake version 3.22 (https://cmake.org/download/)
  - Boost version 1.84.0 (https://www.boost.org/users/history/version_1_84_0.html)
    
 ####  Build using Cmake GUI:
