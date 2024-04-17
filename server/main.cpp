@@ -3,22 +3,15 @@
 
 
 int main(int argc, char* argv[]) {
+	int port{6000};
 	if (argc >= 2) {
-		auto  port = std::stoi(argv[1]);
-		Server server{port};
-		server.start();
-		while (true)
-		{
-			server.update();
-		}
+		port = std::stoi(argv[1]);
+		
 	}
-	else {
-		//if no port specified use local 6000 port
-		Server server{ 6000 };
-		server.start();
-		while (true)
-		{
-			server.update();
-		}
+	Server server{ port };
+	server.start();
+	while (true)
+	{
+		server.update();
 	}
 }

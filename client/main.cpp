@@ -10,17 +10,15 @@
 void mainLoop(Client&);
 
 int main(int argc, char* argv[]) {
+	std::string ipAddress = "127.0.0.1";
+	std::string port = "6000";
 	if (argc >= 3) {
-		Client c;
-		c.connect(argv[1], argv[2]);
-		mainLoop(c);
+		ipAddress = argv[1];
+		port = argv[2];
 	}
-	else {
-		//if no ip and port specified use local 6000 port
-		Client c;
-		c.connect("127.0.0.1", "6000");
-		mainLoop(c);
-	}
+	Client c;
+	c.connect(ipAddress, port);
+	mainLoop(c);
 }
 
 
