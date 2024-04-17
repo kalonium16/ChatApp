@@ -37,42 +37,15 @@ void RequestHandler::handleRequests()
 				};
 											 break;
 				case RequestTypes::GetOtherClients: {
-					auto size = req.getHeader().size / sizeof(uint32_t);
-					uint32_t userId{};
-					if (size == 0) {
-						std::cout << "There are no other user to message" << '\n';
-						m_data.waitingForMessage = false;
-						std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
-					}
-					else {
-						std::cout << "You can write message to this users: \n";
-						m_data.waitingForMessage = true;
-						for (auto i = 0; i < size; i++) {
-							req >> userId;
-							std::cout << "User: " << userId << "\n";
-						}
-						std::cout << "Enter users Id to message: " << std::flush;
-					}
+					printOtherUsers(req);
 				};
 												  break;
 				case RequestTypes::MessageToClient: {
-					std::string message{};
-					//message.resize(req.getHeader().size);
-					req >> message;
-					std::cout << "[" << req.getHeader().reqData.senderId << "]: " << message << std::endl;
+					printUserMessage(req);
 				};
 												  break;
 				case RequestTypes::IsClientOnline: {
-					req >> m_data.isOnline;
-					if (m_data.isOnline) {
-						std::cout << "Enter your message: " << std::flush;
-					}
-					else {
-						std::cout << "User is not online!" << std::endl;
-						m_data.userId = 0;
-						m_data.waitingForMessage = false;
-						std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
-					}
+					printUserStatus(req);
 				};
 												 break;
 				default:
@@ -88,5 +61,47 @@ void RequestHandler::handleRequests()
 			std::cout << "Sever Down\n";
 			m_quit = true;
 		}
+	}
+}
+
+void RequestHandler::printUserStatus(Network::Request<RequestTypes>& req)
+{
+	req >> m_data.isOnline;
+	if (m_data.isOnline) {
+		std::cout << "Enter your message: " << std::flush;
+	}
+	else {
+		std::cout << "User is not online!" << std::endl;
+		m_data.userId = 0;
+		m_data.waitingForMessage = false;
+		std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
+	}
+}
+
+void RequestHandler::printUserMessage(Network::Request<RequestTypes>& req)
+{
+	std::string message{};
+	//message.resize(req.getHeader().size);
+	req >> message;
+	std::cout << "[" << req.getHeader().reqData.senderId << "]: " << message << std::endl;
+}
+
+void RequestHandler::printOtherUsers(Network::Request<RequestTypes>& req)
+{
+	auto size = req.getHeader().size / sizeof(uint32_t);
+	uint32_t userId{};
+	if (size == 0) {
+		std::cout << "There are no other user to message" << '\n';
+		m_data.waitingForMessage = false;
+		std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
+	}
+	else {
+		std::cout << "You can write message to this users: \n";
+		m_data.waitingForMessage = true;
+		for (auto i = 0; i < size; i++) {
+			req >> userId;
+			std::cout << "User: " << userId << "\n";
+		}
+		std::cout << "Enter users Id to message: " << std::flush;
 	}
 }

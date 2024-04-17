@@ -15,6 +15,9 @@ public:
 	RequestHandler(Client&, std::atomic_bool&, messagingData&);
 	~RequestHandler();
 	void handleRequests();
+	void printUserStatus(Network::Request<RequestTypes>& req);
+	void printUserMessage(Network::Request<RequestTypes>& req);
+	void printOtherUsers(Network::Request<RequestTypes>& req);
 private:
 	Client& m_client;
 	std::atomic_bool& m_quit;
