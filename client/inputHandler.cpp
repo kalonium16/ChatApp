@@ -6,20 +6,20 @@ void handleInput(Client& c, std::atomic_bool& bQuit, messagingData& mData, const
 {
 	if (mData.waitingForMessage) {
 		if (mData.userId == 0) {
-			try
-			{
-				mData.userId = std::stoi(inputString);
-					c.isUserOnline(mData.userId);
+			int temp{};
+			if (std::from_chars(inputString.data(), inputString.data() + inputString.size(), temp).ec == std::errc{}) {
+				mData.userId = temp;
+				c.isUserOnline(mData.userId);
 				return;
 			}
-			catch(const std::exception& e)
-			{
+			else {
 				mData.userId = 0;
 				mData.waitingForMessage = false;
 				mData.isOnline = false;
-				std::cerr << e.what() << '\n';
+				std::cout << R"(Wrong Id format!)" << std::endl;
 				std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
-			}				
+			}
+
 		}
 		else if (mData.isOnline) {
 			c.messageToUser(mData.userId, inputString);
