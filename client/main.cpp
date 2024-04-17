@@ -31,14 +31,11 @@ void mainLoop(Client& c) {
 	{
 
 
-		auto input = std::async(std::launch::async, [&]() {
-			std::string input;
-			std::getline(std::cin, input);
-			return input;
-			});
-		const std::string inputString = input.get();
+		
+		std::string input;
+		std::getline(std::cin, input);
 		// handle user input
-		handleInput(c, quit, mData, inputString);
+		handleInput(c, quit, mData, input);
 	} 
 
 }
