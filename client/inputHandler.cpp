@@ -2,48 +2,55 @@
 #include "inputHandler.h"
 
 
-void handleInput(Client& c, std::atomic_bool& bQuit, messagingData& mData, const std::string& inputString)
+InputHandler::InputHandler(Client& c, std::atomic_bool& bQuit, messagingData& mData):
+	m_client(c),m_quit(bQuit),m_messageData(mData)
 {
-	if (mData.waitingForMessage) {
-		if (mData.userId == 0) {
+}
+
+void InputHandler::handleInput(std::string inputString)
+{
+	if (m_messageData.waitingForMessage) {
+		if (m_messageData.userId == 0) {
 			int temp{};
-			if (std::from_chars(inputString.data(), inputString.data() + inputString.size(), temp).ec == std::errc{}) {
-				mData.userId = temp;
-				c.isUserOnline(mData.userId);
+			auto err = std::from_chars(inputString.data(), inputString.data() + inputString.size(), temp).ec;
+			if (err == std::errc::invalid_argument || err == std::errc::result_out_of_range) {
+				m_messageData.userId = 0;
+				m_messageData.waitingForMessage = false;
+				m_messageData.isOnline = false;
+				std::cout << R"(Wrong Id format!)" << std::endl;
+				std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 				return;
 			}
 			else {
-				mData.userId = 0;
-				mData.waitingForMessage = false;
-				mData.isOnline = false;
-				std::cout << R"(Wrong Id format!)" << std::endl;
-				std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
+				m_messageData.userId = temp;
+				m_client.isUserOnline(m_messageData.userId);
+				return;
 			}
 
 		}
-		else if (mData.isOnline) {
-			c.messageToUser(mData.userId, inputString);
-			mData.userId = 0;
-			mData.waitingForMessage = false;
-			mData.isOnline = false;
+		else if (m_messageData.isOnline) {
+			m_client.messageToUser(m_messageData.userId, inputString);
+			m_messageData.userId = 0;
+			m_messageData.waitingForMessage = false;
+			m_messageData.isOnline = false;
 			std::cout << R"(Input "M" or "Message" to send messaage: )" << std::endl;
 			return;
 		}
 	}
 	else {
 		if (inputString == "Up" || inputString == "up") {
-			c.isServerUp();
+			m_client.isServerUp();
 			return;
 		}
 
 		if (inputString == "Quit" || inputString == "quit" || inputString == "q" || inputString == "Q") {
-			bQuit = true;
+			m_quit = true;
 			return;
 		}
 
 
 		if (inputString == "M" || (inputString) == "message" || inputString == "Message") {
-			c.getOterClients();
+			m_client.getOterClients();
 			return;
 		}
 
