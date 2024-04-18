@@ -7,8 +7,6 @@
 #include "requestHandler.h"
 #include "common.h"
 
-void mainLoop(Client&);
-
 int main(int argc, char* argv[]) {
 	std::string ipAddress = "127.0.0.1";
 	std::string port = "6000";
@@ -18,12 +16,6 @@ int main(int argc, char* argv[]) {
 	}
 	Client c;
 	c.connect(ipAddress, port);
-	mainLoop(c);
-}
-
-
-void mainLoop(Client& c) {
-
 	std::atomic_bool quit = false;
 	messagingData mData;
 	RequestHandler reqHandler{ c, quit, mData };
@@ -32,11 +24,11 @@ void mainLoop(Client& c) {
 	{
 
 
-		
+
 		std::string input;
 		std::getline(std::cin, input);
 		// handle user input
 		inputHandler.handleInput(input);
-	} 
-
+	}
 }
+
