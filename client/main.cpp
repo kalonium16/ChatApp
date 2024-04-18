@@ -27,6 +27,7 @@ void mainLoop(Client& c) {
 	std::atomic_bool quit = false;
 	messagingData mData;
 	RequestHandler reqHandler{ c, quit, mData };
+	InputHandler inputHandler{ c, quit, mData };
 	while (!quit)
 	{
 
@@ -35,7 +36,7 @@ void mainLoop(Client& c) {
 		std::string input;
 		std::getline(std::cin, input);
 		// handle user input
-		handleInput(c, quit, mData, input);
+		inputHandler.handleInput(input);
 	} 
 
 }
