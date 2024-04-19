@@ -14,17 +14,19 @@ int main(int argc, char* argv[]) {
 		ipAddress = argv[1];
 		port = argv[2];
 	}
+
 	Client c;
+
 	c.connect(ipAddress, port);
+
 	std::atomic_bool quit = false;
-	messagingData mData;
+	messagingData mData{};
+
 	RequestHandler reqHandler{ c, quit, mData };
 	InputHandler inputHandler{ c, quit, mData };
+
 	while (!quit)
 	{
-
-
-
 		std::string input;
 		std::getline(std::cin, input);
 		// handle user input
