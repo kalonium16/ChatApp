@@ -16,7 +16,14 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(./common/)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
-    add_executable(Server ./server/main.cpp ./server/server.cpp)
-    add_executable(Client ./client/main.cpp ./client/client.cpp ./client/inputHandler.cpp ./client/requestHandler.cpp)
+    add_executable(Server 
+        ./server/main.cpp 
+        ./server/server.cpp ./server/server.h)
+    add_executable(Client 
+        ./client/main.cpp 
+        ./client/client.cpp ./client/client.h 
+        ./client/inputHandler.cpp ./client/inputHandler.h 
+        ./client/requestHandler.cpp ./client/requestHandler.h
+        ./client/common.h)
 endif()
 
